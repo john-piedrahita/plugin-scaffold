@@ -4,9 +4,9 @@
   "description": "This CLI creates an initial structure of a project based on clean architecture.",
   "main": "scaffold.js",
   "scripts": {
-    "prepare": "npm run build",
     "start": "node ./dist/scaffold",
-    "build": "tsc -w -p tsconfig.json"
+    "build": "tsc -w -p tsconfig.json",
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -41,5 +41,6 @@
   },
   "bin": {
     "scaffold": "./dist/scaffold"
-  }
+  },
+  "files": ["dist", "package.json", "README.md"]
 }

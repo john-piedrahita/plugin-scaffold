@@ -1,11 +1,11 @@
 {
-  "name": "plugin-scaffold",
+  "name": "scaffold",
   "version": "1.0.0",
   "description": "This CLI creates an initial structure of a project based on clean architecture.",
-  "main": "index.js",
+  "main": "scaffold.js",
   "scripts": {
     "prepare": "npm run build",
-    "start": "node ./dist/index.js",
+    "start": "node ./dist/scaffold",
     "build": "tsc -w -p tsconfig.json"
   },
   "repository": {
@@ -40,6 +40,6 @@
     "yargs": "^16.2.0"
   },
   "bin": {
-    "clean": "./dist/index.js"
+    "scaffold": "./dist/scaffold"
   }
 }

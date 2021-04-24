@@ -53,7 +53,7 @@ export class InitCommand implements yargs.CommandModule {
                 await CommandUtils.createFile(basePath + "/src/application/config/routes.ts", InitCommand.getConfigRoutesTemplate())
                 await CommandUtils.createFile(basePath + "/src/application/middlewares/body-parser.ts", InitCommand.getBodyParserTemplate())
                 await CommandUtils.createFile(basePath + "/src/application/middlewares/content-type.ts", InitCommand.getContentTypeTemplate())
-                await CommandUtils.createFile(basePath + "/src/application/routes/scaffold.ts", InitCommand.getRoutesTemplate())
+                await CommandUtils.createFile(basePath + "/src/application/routes/index.ts", InitCommand.getRoutesTemplate())
                 await CommandUtils.createFile(basePath + "/src/application/server.ts", InitCommand.getAppServerTemplate(isExpress, database))
                 await CommandUtils.createFile(basePath + "/.env-example", InitCommand.getEnvExampleTemplate())
             }
@@ -63,6 +63,7 @@ export class InitCommand implements yargs.CommandModule {
             await CommandUtils.createDirectories(basePath + "/src/infrastructure/driven-adapters/adapters")
             await CommandUtils.createDirectories(basePath + "/src/infrastructure/driven-adapters/factories")
             await CommandUtils.createDirectories(basePath + "/src/infrastructure/driven-adapters/helpers")
+            await CommandUtils.createDirectories(basePath + "/src/infrastructure/entry-points/factories")
             await CommandUtils.createFile(basePath + "/src/infrastructure/entry-points/gateways/controller.ts", InitCommand.getIControllerTemplate())
             await CommandUtils.createDirectories(basePath + "/src/infrastructure/helpers")
             await CommandUtils.createFile(basePath + "/src/infrastructure/helpers/http.ts", InitCommand.getHttpTemplate())
@@ -442,7 +443,7 @@ export interface IController {
     }
 
     /**
-     * Get content routes/scaffold.ts file
+     * Get content routes/index.ts file
      * @protected
      */
     protected static getRoutesTemplate() {

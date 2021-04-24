@@ -26,7 +26,7 @@ las tareas.
 
    - **`--name`** = Nombre del proyecto el cual especificas.
 
-   - **`--express`** = Esta es una bandera que determina que es un proyecto   con el framework Express, debe de pasarse como **`true`**. En próximas versiones se podrá generar con otros framework de Nodejs.
+   - **`--express`** = Esta es una bandera que determina que es un proyecto con el framework Express, debe de pasarse como **`true`**. En próximas versiones se podrá generar con otros framework de Nodejs.
 
    ```shell
    scaffold init --name=[nombre proyecto] --express true
@@ -34,7 +34,7 @@ las tareas.
 
 **_Estructura que genera el plugin:_**
 
-![](../plugin-scaffold/assets/estructura.png)
+![](./assets/estructura.png)
 
 ## Generar Modelo
 
@@ -48,7 +48,7 @@ las tareas.
 
 **_Estructura que genera la tarea:_**
 
-![](../plugin-scaffold/assets/models.png)
+![](./assets/models.png)
 
 ## Generar Servicio
 
@@ -63,7 +63,7 @@ las tareas.
 
 **_Estructura que genera la tarea:_**
 
-![](../plugin-scaffold/assets/services.png)
+![](./assets/services.png)
 
 ## Generar Controlador
 
@@ -78,4 +78,4 @@ las tareas.
 
 **_Estructura que genera la tarea:_**
 
-![](../plugin-scaffold/assets/controller.png)
+![](./assets/controller.png)

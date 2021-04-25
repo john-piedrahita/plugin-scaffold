@@ -51,4 +51,11 @@ export class CommandUtils {
     static async fileExists(filePath: string) {
         return fs.existsSync(filePath)
     }
+
+    /**
+     * @param filePath
+     */
+    static async deleteFile(filePath: string) {
+        return fs.unlink(filePath, () => console.log("File deleted"))
+    }
 }

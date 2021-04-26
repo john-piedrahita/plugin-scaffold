@@ -55,7 +55,8 @@ export class InitCommand implements yargs.CommandModule {
                 await CommandUtils.createFile(basePath + "/src/application/middlewares/content-type.ts", InitCommand.getContentTypeTemplate())
                 await CommandUtils.createFile(basePath + "/src/application/routes/index.ts", InitCommand.getRoutesTemplate())
                 await CommandUtils.createFile(basePath + "/src/application/server.ts", InitCommand.getAppServerTemplate(isExpress, database))
-                await CommandUtils.createFile(basePath + "/.env-example", InitCommand.getEnvExampleTemplate())
+                await CommandUtils.createFile(basePath + "/.env", InitCommand.getEnvExampleTemplate())
+                await CommandUtils.createFile(basePath + "/.env.example", InitCommand.getEnvExampleTemplate())
             }
 
             await CommandUtils.createDirectories(basePath + "/src/domain/models")
@@ -78,11 +79,12 @@ export class InitCommand implements yargs.CommandModule {
                 console.log(chalk.green(`Project created inside ${chalk.blue(basePath)} directory.`))
             }
 
-            if (args.pm && installNpm) {
-                await InitCommand.executeCommand("npm install")
-            } else {
-                await InitCommand.executeCommand("yarn install")
-            }
+            // if (args.pm && installNpm) {
+            //     await InitCommand.executeCommand("npm install")
+            // } else {
+            //     await InitCommand.executeCommand("yarn install")
+            // }
+
         } catch (error) {
             console.log(chalk.black.bgRed("Error during project initialization:"));
             console.error(error);
@@ -91,6 +93,7 @@ export class InitCommand implements yargs.CommandModule {
     }
 
     protected static executeCommand(command: string) {
+        console.log(chalk.bgYellow(`Installing dependencies...`))
         return new Promise<string>((resolve, reject) => {
             exec(command, (error: any, stdout: any, stderr: any) => {
                 if (stdout) return resolve(stdout)
@@ -192,34 +195,69 @@ export const adaptRoute = (controller: IController) => {
      * @returns 
      */
     static getEnvironmentTemplate(): string {
-        return `import dotenv from "dotenv"
-import fs from "fs"
+        return `import dotenv from "dotenv";
 
-if (fs.existsSync(".env")) {
-    dotenv.config({ path: ".env" })
-} else {
-    dotenv.config({ path: ".env.example" })
-}
+dotenv.config({ path: ".env" })
 
+
+/**
+|----------------------------------------------------------------------------------------|
+    App Configuration
+|----------------------------------------------------------------------------------------|
+*/
 export const ENVIRONMENT = process.env.NODE_ENV;
 const PROD = ENVIRONMENT === "production"
-
-export const SESSION_SECRET = process.env.JWT_SECRET
 export const PORT = process.env.PORT
+
+
+/**
+|----------------------------------------------------------------------------------------|
+    Authentication Configuration
+|----------------------------------------------------------------------------------------|
+*/
+
+export const SESSION_SECRET = process.env.JWT_SECRET || ""
+
+/**
+* Use only if you include jwt
+*/
+// if (!SESSION_SECRET) process.exit(1)
+
+
+/**
+|----------------------------------------------------------------------------------------|
+    Databases Configuration
+|----------------------------------------------------------------------------------------|
+*/
+
+/**
+*  MySQL
+*/
+export const CONFIG_MYSQL = {
+    host     : process.env.HOST,
+    user     : process.env.DB_USER,
+    password : process.env.DB_PASSWORD,
+    database : process.env.DATABASE
+}
+
+/**
+*  Mongo DB
+*/
 export const MONGODB_URI = PROD
     ? process.env.MONGO_PRODUCTION
     : process.env.MONGO_DEVELOPMENT
-
-if (!SESSION_SECRET) process.exit(1)
-
-if (!MONGODB_URI) {
-    if (PROD) {
-        console.log("No mongo connection string. Set MONGODB_URI environment variable.");
-    } else {
-        console.log("No mongo connection string. Set MONGODB_URI_LOCAL environment variable.");
-    }
-    process.exit(1);
-}`
+    
+/**
+ * Postgres
+ */
+export const CONFIG_POSTGRES = {
+    host    : process.env.HOST,
+    user    : process.env.DB_USER_POSTGRES,
+    database: process.env.DATABASE_POSTGRES,
+    password: process.env.DB_PASSWORD_POSTGRES,
+    port: 5432,
+}
+`
 
     }
 
@@ -248,26 +286,16 @@ export default app`
     static getAppServerTemplate(isExpress: boolean, database?: string): string {
         if (isExpress) {
             return `import 'module-alias/register'
+import {PORT} from "@/application/config/environment";
 
 async function main() {
     const app = (await import('./config/app')).default
-    app.listen(3000, () => console.log(\`Server an running on port: ${3000}\`))
+    app.listen(PORT, () => console.log("Server an running on port: " + PORT))
 }
 
-main().then(r => r).catch(e => console.log(e))`
-        }
+main().then(r => r).catch(e => console.log(e))
+`
 
-        if (isExpress && database === "mongodb") {
-            return `import 'module-alias/register'
-import {MongoHelper} from "@/infrastructure/driven-adapters/adapters/mongo-adapter/mongo-helper";
-import {MONGODB_URI} from "@/application/config/environment";
-
-MongoHelper.connect(MONGODB_URI)
-    .then(async () => {
-        console.log('Connected DB')
-        const app = (await import('./config/app')).default
-        app.listen(3000, () => console.log('Server an running on port: ' + 3000))
-    }).catch(error => console.log(error))`
         }
     }
 
@@ -319,6 +347,8 @@ Steps to run this project:
 .vscode/
 node_modules/
 build/
+.env
+package-lock.json
         `   
     }
 
@@ -392,8 +422,15 @@ build/
     }
 
     protected static getEnvExampleTemplate() {
-        return `MONGO_DEVELOPMENT=
+        return `# Mongo configuration
+MONGO_DEVELOPMENT=
 MONGO_PRODUCTION=
+
+# Mysql configuration
+DB_USER=
+DB_PASSWORD=
+DATABASE=
+
 JWT_SECRET=
 NODE_ENV=development
 HOST=127.0.0.1

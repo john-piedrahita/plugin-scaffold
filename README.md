@@ -6,9 +6,11 @@ Este CLI crea la estructura de un proyecto de NodeJs y TypeScript basado en arqu
 - [Implementación del plugin](#implementación-del-plugin)
 - [Tareas](#tareas)
   - [Generar proyecto](#generar-proyecto)
+  - [Generar Base de datos](#generar-base-de-datos)
   - [Generar Modelo](#generar-modelo)
   - [Generar Servicio](#generar-servicio)
   - [Generar Controlador](#generar-controlador)
+  
 
 # Implementación del plugin
 
@@ -29,12 +31,27 @@ las tareas.
    - **`--express`** = Esta es una bandera que determina que es un proyecto con el framework Express, debe de pasarse como **`true`**. En próximas versiones se podrá generar con otros framework de Nodejs.
 
    ```shell
-   scaffold init --name=[nombre proyecto] --express true
+   scaffold init --name=[nombre proyecto] --express=true
    ```
 
 **_Estructura que genera el plugin:_**
 
-![](./assets/estructura.png)
+![](./assets/project.png)
+
+## Generar Base de datos
+
+1. Generamos el adaptador con la configuración inicial de la base de datos para los gestores de base de datos como MongoDB, MySQL o Postgres con el comando **`scaffold create:database`**, 
+   recibe un parámetro **`--database`**, este es requerido.
+
+    - **`--database`** = Nombre del gestor de base de datos **`mongo, mysql, postgres`**.
+
+   ```shell
+   scaffold create:database --database=[nombre del gestor]
+   ```
+
+**_Estructura que genera el plugin:_**
+
+![](./assets/adapter.png)
 
 ## Generar Modelo
 
@@ -48,7 +65,7 @@ las tareas.
 
 **_Estructura que genera la tarea:_**
 
-![](./assets/models.png)
+![](./assets/entity.png)
 
 ## Generar Servicio
 

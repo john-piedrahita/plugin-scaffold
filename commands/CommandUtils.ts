@@ -56,6 +56,6 @@ export class CommandUtils {
      * @param filePath
      */
     static async deleteFile(filePath: string) {
-        return fs.unlink(filePath, () => console.log("File deleted"))
+        return fs.unlink(filePath, (err) => err)
     }
 }

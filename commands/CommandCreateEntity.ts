@@ -51,7 +51,7 @@ export class EntityCreateCommand implements yargs.CommandModule {
      * @returns 
      */
     protected static getTemplate(param: string): string {
-        const name = param.charAt(0).toUpperCase() + param.slice(1);
+        const name = CommandUtils.capitalizeString(param)
         return `export type ${name}Model = {
     // Attributes
 }
@@ -66,7 +66,8 @@ export type Add${name}Params = Omit<${name}Model, 'id'>
      * @protected
      */
     protected static getTemplateRepository(param: string) {
-        return `export interface I${param.charAt(0).toUpperCase() + param.slice(1)}Repository {
+        const name = CommandUtils.capitalizeString(param)
+        return `export interface I${name}Repository {
     
 }`;
     }

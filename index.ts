@@ -5,10 +5,12 @@ import { EntityCreateCommand } from './commands/CommandCreateEntity'
 import {ServiceCreateCommand} from "./commands/CommandCreateService";
 import {ControllerCreateCommand} from "./commands/CommandCreateController";
 import {CommandCreateDatabase} from "./commands/CommandCreateDatabase"
+import {CommandCreateInterface} from "./commands/CommandCreateInterface";
 
 yargs.usage("Usage: $0 <command> [options]")
     .command(new InitCommand())
     .command(new EntityCreateCommand())
+    .command(new CommandCreateInterface())
     .command(new ServiceCreateCommand())
     .command(new ControllerCreateCommand())
     .command(new CommandCreateDatabase())

@@ -58,4 +58,13 @@ export class CommandUtils {
     static async deleteFile(filePath: string) {
         return fs.unlink(filePath, (err) => err)
     }
+
+    /**
+     * Capitalize string
+     * @param param
+     */
+    static capitalizeString(param: string) {
+        let capitalize = param.replace(/(\b\w)/g, (str) => str.toUpperCase());
+        return  capitalize.replace(/-/g, "")
+    }
 }

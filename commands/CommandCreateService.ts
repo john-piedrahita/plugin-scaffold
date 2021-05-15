@@ -49,7 +49,7 @@ export class ServiceCreateCommand implements yargs.CommandModule {
      * @protected
      */
     protected static getTemplateService(param: any) {
-        const name = param.charAt(0).toUpperCase() + param.slice(1)
+        const name = CommandUtils.capitalizeString(param)
         return `import {I${name}Service} from "@/domain/use-cases/${param}-service";
 
 export class ${name}ServiceImpl implements I${name}Service {
@@ -63,7 +63,7 @@ export class ${name}ServiceImpl implements I${name}Service {
      * @protected
      */
     protected static getTemplateIServices(param: string) {
-        const name = param.charAt(0).toUpperCase() + param.slice(1)
+        const name = CommandUtils.capitalizeString(param)
         return `export interface I${name}Service {
 
 }`

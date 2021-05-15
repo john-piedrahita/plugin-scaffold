@@ -44,7 +44,7 @@ export class ControllerCreateCommand implements yargs.CommandModule {
      * @protected
      */
     protected static getTemplateController(param: string) {
-        const name = param.charAt(0).toUpperCase() + param.slice(1)
+        const name = CommandUtils.capitalizeString(param)
 
         return `import {IController} from "@/infrastructure/entry-points/gateways/controller";
 import {HttpRequest, HttpResponse} from "@/infrastructure/helpers/http";

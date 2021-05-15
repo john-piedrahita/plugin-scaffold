@@ -8,6 +8,7 @@ Este CLI crea la estructura de un proyecto de NodeJs y TypeScript basado en arqu
   - [Generar proyecto](#generar-proyecto)
   - [Generar Base de datos](#generar-base-de-datos)
   - [Generar Modelo](#generar-modelo)
+  - [Generar Interface](#generar-interface)
   - [Generar Servicio](#generar-servicio)
   - [Generar Controlador](#generar-controlador)
   
@@ -66,6 +67,38 @@ las tareas.
 **_Estructura que genera la tarea:_**
 
 ![](./assets/entity.png)
+
+## Generar interface
+
+1. El comando **`scaffold create:interface`** genera una interface, la ubicación del archivo es de acuerdo al componente
+    donde se requiera. El nombre debe de llevar un guión medio en caso de que sea compuesto.
+    Ejemplo: **`--name=user, --name=user-detail, --name=post-comments-user.`**
+
+    - **`--name`** = Nombre de la interface.
+    - **`--path`** = Componente donde se crea la interface.
+    - **`opciones`** = Ubicacion donde se genera el archivo: models, service, infra.
+    
+Ejemplo: **`scaffold create:interface --name=user-detail --path=models`**
+
+**_Estructura que genera la tarea:_**
+
+![](./assets/interface-model.png)
+
+Ejemplo: **`scaffold create:interface --name=user-detail --path=service`**
+
+**_Estructura que genera la tarea:_**
+
+![](./assets/interface-service.png)
+   
+Ejemplo: **`scaffold create:interface --name=user-detail --path=infra`**
+   
+**_Estructura que genera la tarea:_**
+   
+![](./assets/interface-infra.png)
+   
+   ```shell
+   scaffold create:interface --name=[nombre de la interface] --path=opciones
+   ```
 
 ## Generar Servicio
 

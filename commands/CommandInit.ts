@@ -151,13 +151,15 @@ export default (app: Express): void => {
      * @returns 
      */
     static getMiddlewaresTemplate(): string {
-        return `import {Express} from "express";
+        return `import cors from "cors";
+import {Express} from "express";
 import {bodyParser} from "@/application/middlewares/body-parser";
 import {contentType} from "@/application/middlewares/content-type";
 
 export default (app: Express): void => {
     app.use(bodyParser)
     app.use(contentType)
+    app.use(cors())
 }`
     }
 
@@ -349,6 +351,7 @@ node_modules/
 build/
 .env
 package-lock.json
+dist
         `   
     }
 
@@ -407,9 +410,13 @@ package-lock.json
         }
 
         if (express) {
-            packageJsonContent.dependencies["express"] = "^4.17.1"
+            packageJsonContent.dependencies["cors"] = "^2.8.5"
             packageJsonContent.dependencies["dotenv"] = "^8.2.0"
+            packageJsonContent.dependencies["express"] = "^4.17.1"
             packageJsonContent.dependencies["module-alias"] = "^2.2.2"
+
+            packageJsonContent.devDependencies["@types/cors"] = "^2.8.10"
+            packageJsonContent.devDependencies["@types/express"] = "^4.17.11"
 
             packageJsonContent.scripts["start"] = "node ./dist/application/server.js"
             packageJsonContent.scripts["build"] = "rimraf dist && tsc -p tsconfig-build.json"

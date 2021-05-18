@@ -1,112 +1,8 @@
-import chalk from "chalk";
-import * as path from "path";
-import * as yargs from "yargs";
-import {exec} from "child_process";
-import {CommandUtils} from "./CommandUtils";
-
-export class InitCommand implements yargs.CommandModule {
-    command = "init"
-    describe = "Generate initial Clean Architecture project structure."
-    
-    builder(args: yargs.Argv) {
-        return args
-            .option("n", {
-                alias: "name",
-                describe: "Name of project directory",
-                demandOption: true
-            })
-            .option("db", {
-                alias: "database",
-                describe: "Database type you'll use in your project."
-            })
-            .option("express", {
-                describe: "Indicates if express should be included in the project.",
-                demandOption: true
-            })
-            .option("pm", {
-                alias: "manager",
-                choices: ["npm", "yarn"],
-                default: "npm",
-                describe: "Install packages, expected values are npm or yarn."
-            })
-    }
-   
-    async handler(args: yargs.Arguments) {
-        try {
-            const database: string = args.database as any || "mysql"
-            const isExpress = args.express !== undefined
-            const basePath = process.cwd() + (args.name ? ("/" + args.name) : "")
-            const projectName = args.name ? path.basename(args.name as any) : undefined
-            const installNpm = args.pm !== "yarn"
-
-            await CommandUtils.createFile(basePath + "/package.json", InitCommand.getPackageJsonTemplate(projectName), false)
-            await CommandUtils.createFile(basePath + "/.gitignore", InitCommand.getGitIgnoreFile())
-            await CommandUtils.createFile(basePath + "/README.md", InitCommand.getReadmeTemplate())
-            await CommandUtils.createFile(basePath + "/tsconfig.json", InitCommand.getTsConfigTemplate())
-            await CommandUtils.createFile(basePath + "/tsconfig-build.json", InitCommand.getTsConfigBuildTemplate())
-
-            if (isExpress) {
-                await CommandUtils.createFile(basePath + "/src/application/config/app.ts", InitCommand.getAppTemplate())
-                await CommandUtils.createFile(basePath + "/src/application/config/environment.ts", InitCommand.getEnvironmentTemplate())
-                await CommandUtils.createFile(basePath + "/src/application/config/express-router-adapter.ts", InitCommand.getAdaptRouterTemplate())
-                await CommandUtils.createFile(basePath + "/src/application/config/middlewares.ts", InitCommand.getMiddlewaresTemplate())
-                await CommandUtils.createFile(basePath + "/src/application/config/routes.ts", InitCommand.getConfigRoutesTemplate())
-                await CommandUtils.createFile(basePath + "/src/application/middlewares/body-parser.ts", InitCommand.getBodyParserTemplate())
-                await CommandUtils.createFile(basePath + "/src/application/middlewares/content-type.ts", InitCommand.getContentTypeTemplate())
-                await CommandUtils.createFile(basePath + "/src/application/routes/index.ts", InitCommand.getRoutesTemplate())
-                await CommandUtils.createFile(basePath + "/src/application/server.ts", InitCommand.getAppServerTemplate(isExpress, database))
-                await CommandUtils.createFile(basePath + "/.env", InitCommand.getEnvExampleTemplate())
-                await CommandUtils.createFile(basePath + "/.env.example", InitCommand.getEnvExampleTemplate())
-            }
-
-            await CommandUtils.createDirectories(basePath + "/src/domain/models")
-            await CommandUtils.createDirectories(basePath + "/src/domain/use-cases/impl")
-            await CommandUtils.createDirectories(basePath + "/src/infrastructure/driven-adapters/adapters")
-            await CommandUtils.createDirectories(basePath + "/src/infrastructure/driven-adapters/factories")
-            await CommandUtils.createDirectories(basePath + "/src/infrastructure/driven-adapters/helpers")
-            await CommandUtils.createDirectories(basePath + "/src/infrastructure/entry-points/factories")
-            await CommandUtils.createFile(basePath + "/src/infrastructure/entry-points/gateways/controller.ts", InitCommand.getIControllerTemplate())
-            await CommandUtils.createDirectories(basePath + "/src/infrastructure/helpers")
-            await CommandUtils.createFile(basePath + "/src/infrastructure/helpers/http.ts", InitCommand.getHttpTemplate())
-
-            await CommandUtils.createDirectories(basePath + "/tests/domain")
-            await CommandUtils.createDirectories(basePath + "/tests/infrastructure")
-
-            const packageJsonContents = await CommandUtils.readFile(basePath + "/package.json")
-            await CommandUtils.createFile(basePath + "/package.json", InitCommand.appendPackageJson(packageJsonContents, database, isExpress))
-
-            if (args.name) {
-                console.log(chalk.green(`Project created inside ${chalk.blue(basePath)} directory.`))
-            }
-
-            // if (args.pm && installNpm) {
-            //     await InitCommand.executeCommand("npm install")
-            // } else {
-            //     await InitCommand.executeCommand("yarn install")
-            // }
-
-        } catch (error) {
-            console.log(chalk.black.bgRed("Error during project initialization:"));
-            console.error(error);
-            process.exit(1);
-        }
-    }
-
-    protected static executeCommand(command: string) {
-        console.log(chalk.bgYellow(`Installing dependencies...`))
-        return new Promise<string>((resolve, reject) => {
-            exec(command, (error: any, stdout: any, stderr: any) => {
-                if (stdout) return resolve(stdout)
-                if (stderr) return reject(stderr)
-                if (error) return reject(error)
-                resolve("")
-            })
-        })
-    }
+export class ProjectInitTemplate {
 
     /**
      * Gets contents content-type.ts file
-     * @returns 
+     * @returns
      */
     static getContentTypeTemplate(): string {
         return `import {NextFunction, Request, Response} from "express";
@@ -117,9 +13,10 @@ export const contentType = (req: Request, res: Response, next: NextFunction): vo
 }`
     }
 
+
     /**
      * Gets content body-parser.ts file
-     * @returns 
+     * @returns
      */
     static getBodyParserTemplate(): string {
         return `import {json} from 'express'
@@ -129,7 +26,7 @@ export const bodyParser = json()`
 
     /**
      * Gets content routes.ts file
-     * @returns 
+     * @returns
      */
     static getConfigRoutesTemplate(): string {
         return `import {readdirSync} from "fs";
@@ -148,7 +45,7 @@ export default (app: Express): void => {
 
     /**
      * Gets contents middlewares.ts file
-     * @returns 
+     * @returns
      */
     static getMiddlewaresTemplate(): string {
         return `import cors from "cors";
@@ -165,7 +62,7 @@ export default (app: Express): void => {
 
     /**
      * Get contents of express-router-adapter.ts file
-     * @returns 
+     * @returns
      */
     static getAdaptRouterTemplate(): string {
         return `import {Request, Response} from 'express'
@@ -194,7 +91,7 @@ export const adaptRoute = (controller: IController) => {
 
     /**
      * Get contents of environment.ts file
-     * @returns 
+     * @returns
      */
     static getEnvironmentTemplate(): string {
         return `import dotenv from "dotenv";
@@ -265,7 +162,7 @@ export const CONFIG_POSTGRES = {
 
     /**
      * Gets content of the app.ts file
-     * @returns 
+     * @returns
      */
     static getAppTemplate(): string {
         return `import express from 'express'
@@ -303,7 +200,7 @@ main().then(r => r).catch(e => console.log(e))
 
     /**
      * Get contents of tsconfig.json file
-     * @returns 
+     * @returns
      */
     static getTsConfigTemplate(): string {
         return JSON.stringify({
@@ -327,7 +224,7 @@ main().then(r => r).catch(e => console.log(e))
 
     /**
      * Gets contents of the new readme.md file.
-     * @returns 
+     * @returns
      */
     static getReadmeTemplate(): string {
         return `## Awesome Project Build with Clean Architecture
@@ -341,8 +238,8 @@ Steps to run this project:
     }
 
     /**
-     * 
-     * @returns 
+     *
+     * @returns
      */
     static getGitIgnoreFile(): string {
         return `.idea/
@@ -352,15 +249,15 @@ build/
 .env
 package-lock.json
 dist
-        `   
+        `
     }
 
     /**
      * Gets contents of the package.json file.
-     * @param projectName 
-     * @returns 
+     * @param projectName
+     * @returns
      */
-    protected static getPackageJsonTemplate(projectName?: string): string {
+    static getPackageJsonTemplate(projectName?: string): string {
         return JSON.stringify({
             name: projectName || "clean-architecture",
             version: "1.0.0",
@@ -382,12 +279,12 @@ dist
 
     /**
      * Appends to a given package.json template everything needed.
-     * @param packageJson 
-     * @param database 
-     * @param express 
-     * @returns 
+     * @param packageJson
+     * @param database
+     * @param express
+     * @returns
      */
-    protected static appendPackageJson(packageJson: string, database: string, express: boolean): string {
+    static appendPackageJson(packageJson: string, database: string, express: boolean): string {
         const packageJsonContent = JSON.parse(packageJson)
 
         if (!packageJsonContent.devDependencies) packageJsonContent.devDependencies = {}
@@ -428,7 +325,7 @@ dist
         return JSON.stringify(packageJsonContent, undefined, 3)
     }
 
-    protected static getEnvExampleTemplate() {
+    static getEnvExampleTemplate() {
         return `# Mongo configuration
 MONGO_DEVELOPMENT=
 MONGO_PRODUCTION=
@@ -444,7 +341,7 @@ HOST=127.0.0.1
 PORT=9000`
     }
 
-    private static getTsConfigBuildTemplate() {
+    static getTsConfigBuildTemplate() {
         return `{
   "extends": "./tsconfig.json",
   "exclude": [
@@ -461,7 +358,7 @@ PORT=9000`
      * Get content http.ts file
      * @protected
      */
-    protected static getHttpTemplate() {
+    static getHttpTemplate() {
         return `export type HttpRequest = {
 body?: any
 headers?: any
@@ -478,7 +375,7 @@ export type HttpResponse = {
      * Get content controller.ts file
      * @protected
      */
-    protected static getIControllerTemplate() {
+    static getIControllerTemplate() {
         return `import {HttpRequest, HttpResponse} from "@/infrastructure/helpers/http";
 
 export interface IController {
@@ -490,7 +387,7 @@ export interface IController {
      * Get content routes/index.ts file
      * @protected
      */
-    protected static getRoutesTemplate() {
+    static getRoutesTemplate() {
         return `import {Request, Response, Router} from "express";
 
 /**

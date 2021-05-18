@@ -1,6 +1,10 @@
+import ora from "ora";
 import yargs from "yargs";
-import chalk from "chalk";
+
+import {EMOJIS} from "../utils/emojis";
+import {MESSAGES} from "../utils/messages";
 import {CommandUtils} from "./CommandUtils";
+import {banner, errorMessage} from "../utils/helpers";
 
 export class CommandCreateInterface implements yargs.CommandModule {
     command = "create:interface";
@@ -24,6 +28,8 @@ export class CommandCreateInterface implements yargs.CommandModule {
         try {
             const fileContent = CommandCreateInterface.getTemplateInterface(args.name as any, args.path as any)
 
+            banner()
+
             switch (args.path) {
                 case "models":
                     return await CommandCreateInterface.generateFile(args.path, args, fileContent)
@@ -34,9 +40,7 @@ export class CommandCreateInterface implements yargs.CommandModule {
 
             }
         } catch (error) {
-            console.log(chalk.black.bgRed("Error during interface creation:"))
-            console.error(error)
-            process.exit(1)
+            errorMessage(error, 'interface')
         }
     }
 
@@ -68,6 +72,9 @@ export class CommandCreateInterface implements yargs.CommandModule {
     protected static async generateFile(type: string, args, fileContent) {
         let basePath: string
         let fileName: string
+        let spinner
+
+        setTimeout(() => (spinner = ora('Installing...').start()), 1000)
 
         switch (type) {
             case 'models':
@@ -86,9 +93,15 @@ export class CommandCreateInterface implements yargs.CommandModule {
 
         const path = `${basePath}/${fileName}`
         const fileExists = await CommandUtils.fileExists(path)
-        if (fileExists) throw `File ${chalk.blue(path)} already exists`
+        if (fileExists) throw MESSAGES.FILE_EXISTS(path)
 
         await  CommandUtils.createFile(path, fileContent)
-        console.log(chalk.green(`Interface ${chalk.blue(path)} has been created successfully`))
+        setTimeout(() => {
+            spinner.succeed("Installation completed")
+            spinner.stopAndPersist({
+                symbol: EMOJIS.ROCKET,
+                text: MESSAGES.FILE_SUCCESS('Interface', path)
+            });
+        }, 1000 * 5);
     }
 }

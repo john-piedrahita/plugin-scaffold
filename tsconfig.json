@@ -5,9 +5,9 @@
     "target": "es2019",
     "esModuleInterop": true,
     "sourceMap": true,
-    "rootDirs": ["./"],
-    "baseUrl": "./"
+    "rootDirs": ["lib"],
+    "baseUrl": "lib"
   },
-  "include": ["./"],
+  "include": ["lib"],
   "exclude": []
 }

@@ -1,6 +1,10 @@
+import ora from "ora";
 import yargs from "yargs";
-import chalk from "chalk";
+
+import {EMOJIS} from "../utils/emojis";
+import {MESSAGES} from "../utils/messages";
 import {CommandUtils} from "./CommandUtils";
+import {banner, errorMessage} from "../utils/helpers";
 
 export class ControllerCreateCommand implements yargs.CommandModule {
     command = "create:controller"
@@ -16,25 +20,33 @@ export class ControllerCreateCommand implements yargs.CommandModule {
     }
 
     async handler(args: yargs.Arguments) {
+        let spinner
+
         try {
-
             const fileContent = ControllerCreateCommand.getTemplateController(args.name as any)
-
             const basePath = `${process.cwd()}/src/infrastructure/entry-points/api/`
             const filename = `${args.name}-controller.ts`
             const path = `${basePath}${filename}`
             const fileExists = await CommandUtils.fileExists(path)
 
-            if (fileExists) throw `File ${chalk.blue(path)} already exists`
+            banner()
+
+            setTimeout(() => (spinner = ora('Installing...').start()), 1000)
+
+            if (fileExists) throw MESSAGES.FILE_EXISTS(path)
 
             await CommandUtils.createFile(path, fileContent)
 
-            console.log(chalk.green(`Controller ${chalk.blue(path)} has been created successfully`))
+            setTimeout(() => {
+                spinner.succeed("Installation completed")
+                spinner.stopAndPersist({
+                    symbol: EMOJIS.ROCKET,
+                    text: MESSAGES.FILE_SUCCESS('Controller', path)
+                });
+            }, 1000 * 5);
 
         } catch (error) {
-            console.log(chalk.black.bgRed("Error during service creation:"))
-            console.error(error)
-            process.exit(1)
+            setTimeout(() => (spinner.fail("Installation fail"), errorMessage(error, 'controller')), 2000)
         }
     }
 

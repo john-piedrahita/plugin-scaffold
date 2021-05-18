@@ -32,7 +32,7 @@ las tareas.
    - **`--express`** = Esta es una bandera que determina que es un proyecto con el framework Express, debe de pasarse como **`true`**. En próximas versiones se podrá generar con otros framework de Nodejs.
 
    ```shell
-   scaffold init --name=[nombre proyecto] --express=true
+   scaffold.ts init --name=[nombre proyecto] --express=true
    ```
 
 **_Estructura que genera el plugin:_**
@@ -47,7 +47,7 @@ las tareas.
     - **`--database`** = Nombre del gestor de base de datos **`mongo, mysql, postgres`**.
 
    ```shell
-   scaffold create:database --database=[nombre del gestor]
+   scaffold.ts create:database --database=[nombre del gestor]
    ```
 
 **_Estructura que genera el plugin:_**
@@ -61,7 +61,7 @@ las tareas.
    - **`--name`** = Nombre del modelo.
     
    ```shell
-   scaffold create:entity --name=[nombre del modelo]
+   scaffold.ts create:entity --name=[nombre del modelo]
    ```
 
 **_Estructura que genera la tarea:_**
@@ -97,7 +97,7 @@ Ejemplo: **`scaffold create:interface --name=user-detail --path=infra`**
 ![](./assets/interface-infra.png)
    
    ```shell
-   scaffold create:interface --name=[nombre de la interface] --path=opciones
+   scaffold.ts create:interface --name=[nombre de la interface] --path=opciones
    ```
 
 ## Generar Servicio
@@ -108,7 +108,7 @@ Ejemplo: **`scaffold create:interface --name=user-detail --path=infra`**
    - **`--name`** = Nombre del servicio.
 
    ```shell
-   scaffold create:service --name=[nombre del servicio]
+   scaffold.ts create:service --name=[nombre del servicio]
    ```
 
 **_Estructura que genera la tarea:_**
@@ -123,7 +123,7 @@ Ejemplo: **`scaffold create:interface --name=user-detail --path=infra`**
    - **`--name`** = Nombre del controlador.
 
    ```shell
-   scaffold create:controller --name=[nombre del controlador]
+   scaffold.ts create:controller --name=[nombre del controlador]
    ```
 
 **_Estructura que genera la tarea:_**

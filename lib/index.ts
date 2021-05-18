@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import yargs from 'yargs'
 import { InitCommand } from "./commands/CommandInit"
 import { EntityCreateCommand } from './commands/CommandCreateEntity'

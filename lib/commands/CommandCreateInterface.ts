@@ -25,22 +25,47 @@ export class CommandCreateInterface implements yargs.CommandModule {
     };
 
     async handler(args: yargs.Arguments) {
+        let spinner
+        let basePath: string
+        let fileName: string
+        let path: string
+        let fileExists: boolean
+
         try {
             const fileContent = CommandCreateInterface.getTemplateInterface(args.name as any, args.path as any)
-
             banner()
+
+            setTimeout(() => (spinner = ora('Installing...').start()), 1000)
 
             switch (args.path) {
                 case "models":
-                    return await CommandCreateInterface.generateFile(args.path, args, fileContent)
+                    basePath = `${process.cwd()}/src/domain/models/gateways`
+                    fileName = `${args.name}-repository.ts`
+                    break
                 case "service":
-                    return await CommandCreateInterface.generateFile(args.path, args, fileContent)
+                    basePath = `${process.cwd()}/src/domain/use-cases`
+                    fileName = `${args.name}-service.ts`
+                    break
                 case "infra":
-                    return await CommandCreateInterface.generateFile(args.path, args, fileContent)
-
+                    basePath = `${process.cwd()}/src/infrastructure/entry-points/gateways`
+                    fileName = `${args.name}.ts`
+                    break
             }
+
+            path = `${basePath}/${fileName}`
+            fileExists = await CommandUtils.fileExists(path)
+            if (fileExists) throw MESSAGES.FILE_EXISTS(path)
+
+            await CommandUtils.createFile(path, fileContent)
+            setTimeout(() => {
+                spinner.succeed("Installation completed")
+                spinner.stopAndPersist({
+                    symbol: EMOJIS.ROCKET,
+                    text: MESSAGES.FILE_SUCCESS('Interface', path)
+                });
+            }, 1000 * 5);
         } catch (error) {
-            errorMessage(error, 'interface')
+            setTimeout(() => (spinner.fail("Installation fail"), errorMessage(error, 'interface')), 2000)
         }
     }
 
@@ -67,41 +92,5 @@ export class CommandCreateInterface implements yargs.CommandModule {
     
 }`
         }
-    }
-
-    protected static async generateFile(type: string, args, fileContent) {
-        let basePath: string
-        let fileName: string
-        let spinner
-
-        setTimeout(() => (spinner = ora('Installing...').start()), 1000)
-
-        switch (type) {
-            case 'models':
-                basePath = `${process.cwd()}/src/domain/models/gateways`
-                fileName = `${args.name}-repository.ts`
-                break
-            case 'service':
-                basePath = `${process.cwd()}/src/domain/use-cases`
-                fileName = `${args.name}-service.ts`
-                break
-            case 'infra':
-                basePath = `${process.cwd()}/src/infrastructure/entry-points/gateways`
-                fileName = `${args.name}.ts`
-                break
-        }
-
-        const path = `${basePath}/${fileName}`
-        const fileExists = await CommandUtils.fileExists(path)
-        if (fileExists) throw MESSAGES.FILE_EXISTS(path)
-
-        await  CommandUtils.createFile(path, fileContent)
-        setTimeout(() => {
-            spinner.succeed("Installation completed")
-            spinner.stopAndPersist({
-                symbol: EMOJIS.ROCKET,
-                text: MESSAGES.FILE_SUCCESS('Interface', path)
-            });
-        }, 1000 * 5);
     }
 }

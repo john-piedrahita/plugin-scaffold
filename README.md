@@ -32,7 +32,7 @@ las tareas.
    - **`--express`** = Esta es una bandera que determina que es un proyecto con el framework Express, debe de pasarse como **`true`**. En próximas versiones se podrá generar con otros framework de Nodejs.
 
    ```shell
-   scaffold.ts init --name=[nombre proyecto] --express=true
+   scaffold init --name=[nombre proyecto] --express=true
    ```
 
 **_Estructura que genera el plugin:_**
@@ -47,7 +47,7 @@ las tareas.
     - **`--database`** = Nombre del gestor de base de datos **`mongo, mysql, postgres`**.
 
    ```shell
-   scaffold.ts create:database --database=[nombre del gestor]
+   scaffold create:database --database=[nombre del gestor]
    ```
 
 **_Estructura que genera el plugin:_**
@@ -57,11 +57,13 @@ las tareas.
 ## Generar Modelo
 
 1. El comando **`scaffold create:entity`** generará un modelo y una interfaz  en la **`capa del dominio [models]`**, esta tarea tiene como parámetro **`--name`** y este es requerido.
+   El nombre debe de llevar un guión medio en caso de que sea compuesto.
+   Ejemplo: **`--name=user, --name=user-detail, --name=post-comments-user.`**
 
    - **`--name`** = Nombre del modelo.
     
    ```shell
-   scaffold.ts create:entity --name=[nombre del modelo]
+   scaffold create:entity --name=[nombre del modelo]
    ```
 
 **_Estructura que genera la tarea:_**
@@ -97,18 +99,19 @@ Ejemplo: **`scaffold create:interface --name=user-detail --path=infra`**
 ![](./assets/interface-infra.png)
    
    ```shell
-   scaffold.ts create:interface --name=[nombre de la interface] --path=opciones
+   scaffold create:interface --name=[nombre de la interface] --path=opciones
    ```
 
 ## Generar Servicio
 
 1. El comando **`scaffold create:service`** generará la interfaz y el servicio que hace la implementación de esta en la 
-   **`capa del dominio [use-cases]`**, esta tarea tiene como parámetro **`--name`** y este es requerido.
+   **`capa del dominio [use-cases]`**, esta tarea tiene como parámetro **`--name`** y este es requerido. El nombre debe de llevar un guión medio en caso de que sea compuesto.
+   Ejemplo: **`--name=user, --name=user-detail, --name=post-comments-user.`**
 
    - **`--name`** = Nombre del servicio.
 
    ```shell
-   scaffold.ts create:service --name=[nombre del servicio]
+   scaffold create:service --name=[nombre del servicio]
    ```
 
 **_Estructura que genera la tarea:_**
@@ -118,12 +121,13 @@ Ejemplo: **`scaffold create:interface --name=user-detail --path=infra`**
 ## Generar Controlador
 
 1. El comando **`scaffold create:controller`** generará un controlador en la **`capa de infrastructure`**, 
-   esta tarea tiene como parámetro **`--name`** y este es requerido.
+   esta tarea tiene como parámetro **`--name`** y este es requerido. El nombre debe de llevar un guión medio en caso de que sea compuesto.
+   Ejemplo: **`--name=user, --name=user-detail, --name=post-comments-user.`**
 
    - **`--name`** = Nombre del controlador.
 
    ```shell
-   scaffold.ts create:controller --name=[nombre del controlador]
+   scaffold create:controller --name=[nombre del controlador]
    ```
 
 **_Estructura que genera la tarea:_**

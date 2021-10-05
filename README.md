@@ -1,135 +1,135 @@
 # Clean Architecture Scaffold
 
-Este CLI crea la estructura de un proyecto de NodeJs y TypeScript basado en arquitectura limpia para construir  API RESTful, viene con la configuración inicial de una aplicación de Express como framework de NodeJs y esta se encuentra en la **`capa de application`**.
+This CLI creates the structure of a NodeJs and TypeScript project based on clean architecture to build REST full APIs, it comes with the initial configuration of an Express application as a NodeJs framework and this is located in the **`application layer`**.
 
 - [Clean Architecture Scaffold](#clean-architecture-scaffold)
-- [Implementación del plugin](#implementación-del-plugin)
-- [Tareas](#tareas)
-  - [Generar proyecto](#generar-proyecto)
-  - [Generar Base de datos](#generar-base-de-datos)
-  - [Generar Modelo](#generar-modelo)
-  - [Generar Interface](#generar-interface)
-  - [Generar Servicio](#generar-servicio)
-  - [Generar Controlador](#generar-controlador)
+- [Implementation of the plugin](#implementación-del-plugin)
+- [Tasks](#tareas)
+  - [Project Generation](#generar-proyecto)
+  - [Database Generation](#generar-base-de-datos)
+  - [Model Generation](#generar-modelo)
+  - [Interface Generation](#generar-interface)
+  - [Service Generation](#generar-servicio)
+  - [Controller Generate](#generar-controlador)
   
 
-# Implementación del plugin
+# Implementation of the plugin
 
-Instalamos el plugin de forma global en nuestro equipo, para poder acceder a los comandos que generan
-las tareas.
+We install the plugin globally in our computer, to be able to access the commands that generate the tasks.
+the tasks.
 
 **`npm i -g clean-scaffold`**
 
-# Tareas
+# Tasks
 
-## Generar proyecto
+## Project Generation
 
-1. Generamos la estructura del proyecto con el comando **`scaffold init`**, el cual recibe dos parámetros
-    **`--name`** y **`--express`**.
+1. We generate the project structure with the command **`scaffold init`**, which receives two parameters.
+    **`--name`** and **`--express`**.
 
-   - **`--name`** = Nombre del proyecto el cual especificas.
+   - **`--name`** = Name of project you specify.
 
-   - **`--express`** = Esta es una bandera que determina que es un proyecto con el framework Express, debe de pasarse como **`true`**. En próximas versiones se podrá generar con otros framework de Nodejs.
+   - **`--express`** = This is a flag that determines that it is a project with the Express framework, it must be passed as **`true`**. In future versions it will be possible to generate with other Nodejs framework.
 
    ```shell
-   scaffold init --name=[nombre proyecto] --express=true
+   scaffold init --name=[project name] --express=true
    ```
 
-**_Estructura que genera el plugin:_**
+**_Plugin generated structure:_**
 
 ![](./assets/project.png)
 
-## Generar Base de datos
+## Database Generation
 
-1. Generamos el adaptador con la configuración inicial de la base de datos para los gestores de base de datos como MongoDB, MySQL o Postgres con el comando **`scaffold create:database`**, 
-   recibe un parámetro **`--database`**, este es requerido.
+1. We generate the adapter with the initial database configuration for database managers like MongoDB, MySQL or Postgres with the command **`scaffold create:database`**,
+   receives a parameter **`--database`**, this is required.
 
-    - **`--database`** = Nombre del gestor de base de datos **`mongo, mysql, postgres`**.
+    - **`--database`** = Database manager name **`mongo, mysql, postgres`**.
 
    ```shell
-   scaffold create:database --database=[nombre del gestor]
+   scaffold create:database --database=[manager name]
    ```
 
-**_Estructura que genera el plugin:_**
+**_Plugin generated structure:_**
 
 ![](./assets/adapter.png)
 
-## Generar Modelo
+## Model Generation
 
-1. El comando **`scaffold create:entity`** generará un modelo y una interfaz  en la **`capa del dominio [models]`**, esta tarea tiene como parámetro **`--name`** y este es requerido.
-   El nombre debe de llevar un guión medio en caso de que sea compuesto.
-   Ejemplo: **`--name=user, --name=user-detail, --name=post-comments-user.`**
+1. The **`scaffold create:entity`** command will generate a model and an interface in the **`domain layer [models]`**, this task has **`--name`** as parameter and this is required.
+   The name must have a middle hyphen in case it is compound.
+   Example: **`--name=user, --name=user-detail, --name=post-comments-user.`**
 
-   - **`--name`** = Nombre del modelo.
+   - **`--name`** = Model name.
     
    ```shell
-   scaffold create:entity --name=[nombre del modelo]
+   scaffold create:entity --name=[model name]
    ```
 
-**_Estructura que genera la tarea:_**
+**_Task generating structure:_**
 
 ![](./assets/entity.png)
 
-## Generar interface
+## Interface Generation
 
-1. El comando **`scaffold create:interface`** genera una interface, la ubicación del archivo es de acuerdo al componente
-    donde se requiera. El nombre debe de llevar un guión medio en caso de que sea compuesto.
-    Ejemplo: **`--name=user, --name=user-detail, --name=post-comments-user.`**
+1. The **`scaffold create:interface`** command generates an interface, the location of the file is according to the component where it is required.
+   where it is required. The name must have a hyphen in case it is a compound name.
+   Example: **`--name=user, --name=user-detail, --name=post-comments-user.`**
 
-    - **`--name`** = Nombre de la interface.
-    - **`--path`** = Componente donde se crea la interface.
-    - **`opciones`** = Ubicacion donde se genera el archivo: models, service, infra.
+    - **`--name`** = Interface name.
+    - **`--path`** = Component where the interface is created.
+    - **`opciones`** = Location where the file is generated: models, service, infra.
     
-Ejemplo: **`scaffold create:interface --name=user-detail --path=models`**
+Example: **`scaffold create:interface --name=user-detail --path=models`**
 
-**_Estructura que genera la tarea:_**
+**_Structure that generates the task:_**
 
 ![](./assets/interface-model.png)
 
-Ejemplo: **`scaffold create:interface --name=user-detail --path=service`**
+Example: **`scaffold create:interface --name=user-detail --path=service`**
 
-**_Estructura que genera la tarea:_**
+**_Structure that generates the task:_**
 
 ![](./assets/interface-service.png)
    
-Ejemplo: **`scaffold create:interface --name=user-detail --path=infra`**
+Example: **`scaffold create:interface --name=user-detail --path=infra`**
    
-**_Estructura que genera la tarea:_**
+**_Structure that generates the task:_**
    
 ![](./assets/interface-infra.png)
    
    ```shell
-   scaffold create:interface --name=[nombre de la interface] --path=opciones
+   scaffold create:interface --name=[interface name] --path=options
    ```
 
-## Generar Servicio
+## Service Generation
 
-1. El comando **`scaffold create:service`** generará la interfaz y el servicio que hace la implementación de esta en la 
-   **`capa del dominio [use-cases]`**, esta tarea tiene como parámetro **`--name`** y este es requerido. El nombre debe de llevar un guión medio en caso de que sea compuesto.
-   Ejemplo: **`--name=user, --name=user-detail, --name=post-comments-user.`**
+1. The **`scaffold create:service`** command will generate the interface and the service that implements it in the **`domain layer [use-cases]`**.
+   **`domain layer [use-cases]`**, this task has **`--name`** as parameter and this is required. The name must have a hyphen in case it is a compound name.
+   Example: **`--name=user, --name=user-detail, --name=post-comments-user.`**
 
-   - **`--name`** = Nombre del servicio.
+   - **`--name`** = Service name.
 
    ```shell
    scaffold create:service --name=[nombre del servicio]
    ```
 
-**_Estructura que genera la tarea:_**
+**_Structure that generates the task:_**
 
 ![](./assets/services.png)
 
-## Generar Controlador
+## Controller Generation
 
-1. El comando **`scaffold create:controller`** generará un controlador en la **`capa de infrastructure`**, 
-   esta tarea tiene como parámetro **`--name`** y este es requerido. El nombre debe de llevar un guión medio en caso de que sea compuesto.
-   Ejemplo: **`--name=user, --name=user-detail, --name=post-comments-user.`**
+1. The **`scaffold create:controller`** command will generate a controller in the **`infrastructure layer`**,
+   this task has **`--name`** as parameter and this is required. The name must have a hyphen in case it is a compound name.
+   Example: **`--name=user, --name=user-detail, --name=post-comments-user.`**
 
-   - **`--name`** = Nombre del controlador.
+   - **`--name`** = Controller name.
 
    ```shell
-   scaffold create:controller --name=[nombre del controlador]
+   scaffold create:controller --name=[controller name]
    ```
 
-**_Estructura que genera la tarea:_**
+**_Structure that generates the task:_**
 
 ![](./assets/controller.png)

@@ -18,22 +18,19 @@ This CLI creates the structure of a NodeJs and TypeScript project based on clean
 We install the plugin globally in our computer, to be able to access the commands that generate the tasks.
 the tasks.
 
-**`npm i -g clean-scaffold`**
-
+```shell
+    npm i -g clean-scaffold
+```
+   
 # Tasks
 
 ## Project Generation
 
-1. We generate the project structure with the command **`scaffold init`**, which receives two parameters.
-    **`--name`** and **`--express`**.
+1. We generate the project structure with the command **`scaffold init`**, which receives one parameter **`--name`**.
 
-   - **`--name`** = Name of project you specify.
-
-   - **`--express`** = This is a flag that determines that it is a project with the Express framework, it must be passed as **`true`**. In future versions it will be possible to generate with other Nodejs framework.
-
-   ```shell
-   scaffold init --name=[project name] --express=true
-   ```
+```shell
+   scaffold init --name=[project name]
+```
 
 **_Plugin generated structure:_**
 

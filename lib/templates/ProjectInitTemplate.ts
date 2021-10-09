@@ -165,37 +165,16 @@ export const CONFIG_POSTGRES = {
      * @returns
      */
     static getAppTemplate(): string {
-        return `import express from 'express'
-import setupRoutes from '@/application/config/routes'
-import setupMiddlewares from '@/application/config/middlewares'
+        return `import {Container} from "clean-ts";
 
-const app = express()
-setupMiddlewares(app)
-setupRoutes(app)
+@Container({
+    imports: [],
+    controllers: [],
+    providers: []
+})
 
-export default app`
-    }
-
-    /**
-     * Get contents of the server.ts file
-     * @param isExpress
-     * @param database
-     * @returns
-     */
-    static getAppServerTemplate(isExpress: boolean, database?: string): string {
-        if (isExpress) {
-            return `import 'module-alias/register'
-import {PORT} from "@/application/config/environment";
-
-async function main() {
-    const app = (await import('./config/app')).default
-    app.listen(PORT, () => console.log("Server an running on port: " + PORT))
-}
-
-main().then(r => r).catch(e => console.log(e))
+export class AppContainer {}
 `
-
-        }
     }
 
     /**
@@ -217,7 +196,7 @@ main().then(r => r).catch(e => console.log(e))
                     "@/*": ["*"]
                 },
             },
-            "include": ["src","tests"],
+            "include": ["src", "tests"],
             "exclude": []
         }, undefined, 3)
     }
@@ -262,18 +241,10 @@ dist
             name: projectName || "clean-architecture",
             version: "1.0.0",
             description: "Awesome project developed with Clean Architecture",
-            scripts: {
-
-            },
-            dependencies: {
-
-            },
-            devDependencies: {
-
-            },
-            _moduleAliases: {
-
-            }
+            scripts: {},
+            dependencies: {},
+            devDependencies: {},
+            _moduleAliases: {}
         }, undefined, 3)
     }
 
@@ -281,46 +252,39 @@ dist
      * Appends to a given package.json template everything needed.
      * @param packageJson
      * @param database
-     * @param express
      * @returns
      */
-    static appendPackageJson(packageJson: string, database: string, express: boolean): string {
+    static appendPackageJson(packageJson: string, database: string): string {
         const packageJsonContent = JSON.parse(packageJson)
 
         if (!packageJsonContent.devDependencies) packageJsonContent.devDependencies = {}
         Object.assign(packageJsonContent.devDependencies, {
-            "@types/node": "^8.0.29",
-            "nodemon":"^2.0.7",
+            "@types/node": "^14.17.21",
+            "nodemon": "^2.0.9",
             "rimraf": "^3.0.2",
-            "ts-node": "3.3.0",
-            "typescript": "^4.2.4"
+            "ts-node": "^10.2.1",
+            "typescript": "^4.4.3"
         })
 
         switch (database) {
             case "mongodb":
                 packageJsonContent.devDependencies["@shelf/jest-mongodb"] = "^1.2.4"
-                packageJsonContent.devDependencies["@types/mongodb"] = "^3.6.12"
-                packageJsonContent.dependencies["mongodb"] = "^3.6.6"
+                packageJsonContent.devDependencies["@types/mongodb"] = "^4.0.7"
+                packageJsonContent.dependencies["mongodb"] = "^4.1.2"
                 break;
             default:
                 break;
         }
 
-        if (express) {
-            packageJsonContent.dependencies["cors"] = "^2.8.5"
-            packageJsonContent.dependencies["dotenv"] = "^8.2.0"
-            packageJsonContent.dependencies["express"] = "^4.17.1"
-            packageJsonContent.dependencies["module-alias"] = "^2.2.2"
+        packageJsonContent.dependencies["clean-ts"] = "^1.1.1"
+        packageJsonContent.dependencies["dotenv"] = "^10.0.0"
+        packageJsonContent.dependencies["module-alias"] = "^2.2.2"
 
-            packageJsonContent.devDependencies["@types/cors"] = "^2.8.10"
-            packageJsonContent.devDependencies["@types/express"] = "^4.17.11"
+        packageJsonContent.scripts["start"] = "node ./dist/application/server.js"
+        packageJsonContent.scripts["build"] = "rimraf dist && tsc -p tsconfig-build.json"
+        packageJsonContent.scripts["watch"] = "nodemon --exec \"npm run build && npm run start\" --watch src --ext ts"
 
-            packageJsonContent.scripts["start"] = "node ./dist/application/server.js"
-            packageJsonContent.scripts["build"] = "rimraf dist && tsc -p tsconfig-build.json"
-            packageJsonContent.scripts["watch"] = "nodemon --exec \"npm run build && npm run start\" --watch src --ext ts"
-
-            packageJsonContent._moduleAliases["@"] = "dist"
-        }
+        packageJsonContent._moduleAliases["@"] = "dist"
 
         return JSON.stringify(packageJsonContent, undefined, 3)
     }
@@ -399,5 +363,18 @@ export default (router: Router): void => {
         res.json("Welcome to the world of clean architecture.")
     })
 }`
+    }
+
+    static getIndexTemplate() {
+        return `import {CleanFactory} from "clean-ts";
+import {AppContainer} from "./app";
+import {PORT} from "./config/environment";
+    
+async function init() {
+    const app = await CleanFactory.create(AppContainer)
+    await app.listen(PORT, () => console.log('Running on port ' + PORT))
+}
+   
+init();`
     }
 }

@@ -1,6 +1,6 @@
 {
    "name": "clean-scaffold",
-   "version": "1.5.1",
+   "version": "1.5.2",
    "description": "This CLI creates an initial structure of a project based on clean architecture.",
    "main": "index.js",
    "bin": {

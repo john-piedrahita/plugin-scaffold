@@ -4,14 +4,14 @@ This CLI creates the structure of a NodeJs and TypeScript project based on clean
 
 - [Clean Architecture Scaffold](#clean-architecture-scaffold)
 - [Implementation of the plugin](#implementación-del-plugin)
-- [Tasks](#tareas)
-  - [Project Generation](#generar-proyecto)
-  - [Database Generation](#generar-base-de-datos)
-  - [Model Generation](#generar-modelo)
-  - [Interface Generation](#generar-interface)
-  - [Service Generation](#generar-servicio)
-  - [Adapter Generation](#generar-adaptador)
-  - [Controller Generate](#generar-controlador)
+- [Tasks](#tasks)
+  - [Project Generation](#project-generation)
+  - [Database Generation](#database-generation)
+  - [Model Generation](#model-generation)
+  - [Interface Generation](#interface-generation)
+  - [Service Generation](#service-generation)
+  - [Adapter Generation](#adapter-generation)
+  - [Controller Generate](#controller-generation)
   
 
 # Implementation of the plugin
@@ -30,7 +30,7 @@ the tasks.
 1. We generate the project structure with the command **`scaffold init`**, which receives one parameter **`--name`**.
 
 ```shell
-   scaffold init --name=[project name]
+   scaffold create:project --name=[project name]
 ```
 
 **_Plugin generated structure:_**

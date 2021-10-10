@@ -4,24 +4,35 @@ export class DatabaseTemplate {
      * Get content mongo-helper.ts file
      */
     static getTemplateMongoDatabase() {
-        return `import {MongoClient} from "mongodb";
+        return `import {Collection, MongoClient} from "mongodb";
 
 export const MongoHelper = {
     client: null as MongoClient,
     uri: null as string,
-    
+
     async connect(uri: string): Promise<void> {
-       this.uri = uri
-       this.client = await MongoClient.connect(uri, {
-           useNewUrlParser: true,
-           useUnifiedTopology: true
-       })
+        this.uri = uri
+        this.client = new MongoClient(uri)
+        await this.client.connect()
     },
-    
+
     async disconnect(): Promise<void> {
         await this.client.close()
         this.client = null
     },
+
+    async getCollection(name: string): Promise<Collection> {
+        return this.client.db().collection(name)
+    },
+
+    map: (data: any): any => {
+        const {_id, ...rest} = data
+        return Object.assign({}, rest, {id: _id})
+    },
+
+    mapCollection: (collection: any[]): any[] => {
+        return collection.map(c => MongoHelper.map(c))
+    }
 }`
     }
 
@@ -73,19 +84,19 @@ export const PostgresHelper = {
      */
     static getTemplateServerMongo() {
         return `import 'module-alias/register'
-import fs from "fs"
-import dotenv from "dotenv"
-import {MongoHelper} from "@/infrastructure/driven-adapters/adapters/mongo-adapter/mongo-helper";
-import {MONGODB_URI, PORT} from "@/application/config/environment";
+import {CleanFactory} from "clean-ts";
 
+import { AppContainer } from '@/application/app';
+import { MONGODB_URI, PORT } from '@/application/config/environment';
+import { MongoHelper } from '@/infrastructure/driven-adapters/adapters/mongo-adapter/mongo-helper';
 
-if (fs.existsSync(".env")) dotenv.config({ path: ".env" })
-
-MongoHelper.connect(MONGODB_URI).then(async () => {
-    console.log("Connected mongoDB")
-    const app = (await import('./config/app')).default
-    app.listen(PORT, () => console.log("Server an running on port: " + PORT))
-}).catch(err => console.log(err))
+MongoHelper.connect(MONGODB_URI)
+    .then(async () => {
+        console.log('Connected DB')
+        const app = await CleanFactory.create(AppContainer)
+        await app.listen(PORT, () => console.log('Running on port ' + PORT))
+    .catch(error => console.log(error))
+})
 `
     }
 
@@ -94,17 +105,17 @@ MongoHelper.connect(MONGODB_URI).then(async () => {
      */
     static getTemplateServerMysql() {
         return `import 'module-alias/register'
-import fs from "fs"
-import dotenv from "dotenv"
+import {CleanFactory} from "clean-ts";
+
+import {AppContainer} from "./app";
+import {PORT} from "./config/environment";
 import {MysqlHelper} from "@/infrastructure/driven-adapters/adapters/mysql-adapter/mysql-helper";
-import {PORT} from "@/application/config/environment";
 
-if (fs.existsSync(".env")) dotenv.config({ path: ".env" })
-
-MysqlHelper.connect().then(async () => {
-    const app = (await import('./config/app')).default
-    app.listen(PORT, () => console.log("Server an running on port: " + PORT))
-}).catch(err => console.log(err))
+MysqlHelper.connect()
+    .then(async () => {
+        const app = await CleanFactory.create(AppContainer)
+        await app.listen(PORT, () => console.log('Running on port ' + PORT))})
+    .catch(err => console.log(err))
 `
     }
 
@@ -113,17 +124,17 @@ MysqlHelper.connect().then(async () => {
      */
     static getTemplateServerPostgres() {
         return `import 'module-alias/register'
-import fs from "fs"
-import dotenv from "dotenv"
+import {CleanFactory} from "clean-ts";
+
+import {AppContainer} from "./app";
 import {PORT} from "@/application/config/environment";
 import {PostgresHelper} from "@/infrastructure/driven-adapters/adapters/postgres-adapter/postgres-helper";
 
-if (fs.existsSync(".env")) dotenv.config({ path: ".env" })
-
-PostgresHelper.connect().then(async () => {
-    const app = (await import('./config/app')).default
-    app.listen(PORT, () => console.log("Server an running on port: " + PORT))
-}).catch(err => console.log(err))
+PostgresHelper.connect()
+    .then(async () => {
+        const app = await CleanFactory.create(AppContainer)
+        await app.listen(PORT, () => console.log('Running on port ' + PORT))})})
+    .catch(err => console.log(err))
 `
     }
 }

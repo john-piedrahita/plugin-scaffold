@@ -27,10 +27,11 @@ export class ServiceCreateCommand implements yargs.CommandModule {
             const fileContent = ServiceCreateCommand.getTemplateService(args.name as any)
             const fileContentRepository = ServiceCreateCommand.getTemplateIServices(args.name as any)
 
-            const basePath = `${process.cwd()}/src/domain/use-cases/`
-            const filename = `${args.name}-service-impl.ts`
-            const path = `${basePath}impl/${filename}`
-            const pathRepository = `${basePath + args.name}-service.ts`
+            const basePath = `${process.cwd()}/src/domain/use-cases/`;
+            const filename = `${args.name}-service-impl.ts`;
+            const path = `${basePath}impl/${filename}`;
+            const pathRepository = `${basePath + args.name}-service.ts`;
+
             const fileExists = await CommandUtils.fileExists(path)
 
             banner()
@@ -63,10 +64,13 @@ export class ServiceCreateCommand implements yargs.CommandModule {
      */
     protected static getTemplateService(param: any) {
         const name = CommandUtils.capitalizeString(param)
-        return `import {I${name}Service} from "@/domain/use-cases/${param}-service";
+        return `import {Service} from "clean-ts";
+import {I${name}Service} from "@/domain/use-cases/${param}-service";
 
+@Service()
 export class ${name}ServiceImpl implements I${name}Service {
-
+    constructor() {
+    }
 }`
     }
 

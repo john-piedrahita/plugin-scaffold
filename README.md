@@ -10,6 +10,7 @@ This CLI creates the structure of a NodeJs and TypeScript project based on clean
   - [Model Generation](#generar-modelo)
   - [Interface Generation](#generar-interface)
   - [Service Generation](#generar-servicio)
+  - [Adapter Generation](#generar-adaptador)
   - [Controller Generate](#generar-controlador)
   
 
@@ -34,7 +35,7 @@ the tasks.
 
 **_Plugin generated structure:_**
 
-![](./assets/project.png)
+![](./assets/init.png)
 
 ## Database Generation
 
@@ -43,25 +44,24 @@ the tasks.
 
     - **`--database`** = Database manager name **`mongo, mysql, postgres`**.
 
-   ```shell
+```shell
    scaffold create:database --database=[manager name]
-   ```
+```
 
 **_Plugin generated structure:_**
 
-![](./assets/adapter.png)
+![](./assets/database.png)
 
 ## Model Generation
 
 1. The **`scaffold create:entity`** command will generate a model and an interface in the **`domain layer [models]`**, this task has **`--name`** as parameter and this is required.
    The name must have a middle hyphen in case it is compound.
+
    Example: **`--name=user, --name=user-detail, --name=post-comments-user.`**
 
-   - **`--name`** = Model name.
-    
-   ```shell
+```shell
    scaffold create:entity --name=[model name]
-   ```
+```
 
 **_Task generating structure:_**
 
@@ -69,64 +69,95 @@ the tasks.
 
 ## Interface Generation
 
-1. The **`scaffold create:interface`** command generates an interface, the location of the file is according to the component where it is required.
-   where it is required. The name must have a hyphen in case it is a compound name.
+1. The **`scaffold create:interface`** command generates an interface, the location of the file is according to the
+   component where it is required. where it is required. The name must have a hyphen in case it is a compound name.
+
+
    Example: **`--name=user, --name=user-detail, --name=post-comments-user.`**
 
-    - **`--name`** = Interface name.
-    - **`--path`** = Component where the interface is created.
-    - **`opciones`** = Location where the file is generated: models, service, infra.
-    
-Example: **`scaffold create:interface --name=user-detail --path=models`**
+```shell
+   scaffold create:interface --name=user-detail --path=model
+```
 
-**_Structure that generates the task:_**
+```shell
+   scaffold create:interface --name=user-detail --path=service
+```
 
-![](./assets/interface-model.png)
+```shell
+   scaffold create:interface --name=user-detail --path=infra
+```
 
-Example: **`scaffold create:interface --name=user-detail --path=service`**
-
-**_Structure that generates the task:_**
-
-![](./assets/interface-service.png)
-   
-Example: **`scaffold create:interface --name=user-detail --path=infra`**
-   
-**_Structure that generates the task:_**
-   
-![](./assets/interface-infra.png)
-   
-   ```shell
-   scaffold create:interface --name=[interface name] --path=options
-   ```
 
 ## Service Generation
 
 1. The **`scaffold create:service`** command will generate the interface and the service that implements it in the **`domain layer [use-cases]`**.
    **`domain layer [use-cases]`**, this task has **`--name`** as parameter and this is required. The name must have a hyphen in case it is a compound name.
+
    Example: **`--name=user, --name=user-detail, --name=post-comments-user.`**
 
-   - **`--name`** = Service name.
-
-   ```shell
-   scaffold create:service --name=[nombre del servicio]
-   ```
+```shell
+   scaffold create:service --name=[service name]
+```
 
 **_Structure that generates the task:_**
 
 ![](./assets/services.png)
 
+**`This configuration must be done manually.`**
+
+![](./assets/service-provider-injetable.png)
+
+## Adapter Generation
+
+1. The **`scaffold create:adapter`** command will generate an adapter in the **`infrastructure layer`**, 
+   this task has **`--name`** and **`--database`** as parameters this is required. The name of the **`--database`** parameter corresponds to the database manager.
+   After the adapter is generated, the provider must be included in the app.ts file and then the name of the provider in the corresponding service must be passed through the constructor.
+
+   Example: **`--name=user --database=mongo`**
+
+```shell
+   scaffold create:adapter --name=[adapter name] --database=[database manager]
+```
+
+**_Structure that generates the task:_**
+
+![](./assets/adapter.png)
+
+2. This command generates two files, the class that communicates with the service through the gateway and the provider resolves the dependencies of this communication.
+
+**`This configuration must be done manually.`**
+
+    Service configuration.
+
+![](./assets/service-injectable.png)
+
+    app.ts configuration.
+
+![](./assets/provider-injectable.png)
+
 ## Controller Generation
 
 1. The **`scaffold create:controller`** command will generate a controller in the **`infrastructure layer`**,
    this task has **`--name`** as parameter and this is required. The name must have a hyphen in case it is a compound name.
+
    Example: **`--name=user, --name=user-detail, --name=post-comments-user.`**
 
-   - **`--name`** = Controller name.
-
-   ```shell
+```shell
    scaffold create:controller --name=[controller name]
-   ```
+```
 
 **_Structure that generates the task:_**
 
 ![](./assets/controller.png)
+
+**`This configuration must be done manually.`**
+
+app.ts configuration.
+
+![](./assets/controller-injectable.png)
+
+2. The naming convention must be applied between the service and the controller to generate the Dependency Injection in the controller and an endpoint to enter the application.
+
+![](./assets/controller-template.png)
+
+

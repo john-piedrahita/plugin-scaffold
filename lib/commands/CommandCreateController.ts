@@ -23,7 +23,11 @@ export class ControllerCreateCommand implements yargs.CommandModule {
         let spinner
 
         try {
-            const fileContent = ControllerCreateCommand.getTemplateController(args.name as any)
+
+            const directoryImplementation = `${process.cwd()}/src/domain/use-cases/impl`;
+            const files = await CommandUtils.injectServiceAdapter(directoryImplementation);
+
+            const fileContent = ControllerCreateCommand.getTemplateController(args.name as any, files)
             const basePath = `${process.cwd()}/src/infrastructure/entry-points/api/`
             const filename = `${args.name}-controller.ts`
             const path = `${basePath}${filename}`
@@ -53,20 +57,44 @@ export class ControllerCreateCommand implements yargs.CommandModule {
     /**
      * Get content controllers files
      * @param param
+     * @param files
      * @protected
      */
-    protected static getTemplateController(param: string) {
-        const name = CommandUtils.capitalizeString(param)
+    protected static getTemplateController(param: string, files: string[]) {
+        let nameService: string = "";
+        let nameCapitalize: string = CommandUtils.capitalizeString(param);
 
-        return `import {IController} from "@/infrastructure/entry-points/gateways/controller";
-import {HttpRequest, HttpResponse} from "@/infrastructure/helpers/http";
+        // This loop when the name of the controller matches the service, to then be injected through the constructor.
+        for (const file of files) {
+            let name = file.slice(0, -16);
+            if(name === param) {
+                nameService = name;
+                const nameCapitalizeService = CommandUtils.capitalizeString(nameService);
+                const transformString = CommandUtils.transformInitialString(nameCapitalizeService);
 
-export class ${name}Controller  implements IController {
-    
-    async handle(request: HttpRequest): Promise<HttpResponse> {
-        // Implementation
-        return
+                return `import {Mapping} from "clean-ts";
+import {${nameCapitalizeService}ServiceImpl} from "@/domain/use-cases/impl/${nameService}-service-impl";
+
+@Mapping('api/v1/${nameService}')
+export class ${nameCapitalizeService}Controller {
+
+    constructor(
+        private readonly ${transformString}Service: ${nameCapitalizeService}ServiceImpl
+    ) {
     }
-}`
+}
+`
+            };
+        }
+
+        return `import {Mapping} from "clean-ts";
+
+@Mapping('')
+export class ${nameCapitalize}Controller {
+    constructor() {
+        
+    }
+}
+`
     }
 }

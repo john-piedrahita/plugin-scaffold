@@ -9,7 +9,7 @@ import { CommandUtils } from "./CommandUtils";
 import {banner, errorMessage} from "../utils/helpers";
 import {DatabaseTemplate} from "../templates/DatabaseTemplate";
 
-export class CommandCreateDatabase implements yargs.CommandModule {
+export class DatabaseCreateCommand implements yargs.CommandModule {
     command = "create:database"
     describe = "Generate database configuration"
 
@@ -41,11 +41,11 @@ export class CommandCreateDatabase implements yargs.CommandModule {
 
             switch (database) {
                 case "mongo":
-                    return await CommandCreateDatabase.getTemplateToCreateDatabase(base, path, fileContentMongo, database)
+                    return await DatabaseCreateCommand.getTemplateToCreateDatabase(base, path, fileContentMongo, database)
                 case "mysql":
-                   return await CommandCreateDatabase.getTemplateToCreateDatabase(base, path, fileContentMysql, database)
+                   return await DatabaseCreateCommand.getTemplateToCreateDatabase(base, path, fileContentMysql, database)
                 case "postgres":
-                    return await CommandCreateDatabase.getTemplateToCreateDatabase(base, path, fileContentPostgres, database)
+                    return await DatabaseCreateCommand.getTemplateToCreateDatabase(base, path, fileContentPostgres, database)
             }
         } catch (error) {
             errorMessage(error, 'database')
@@ -81,8 +81,8 @@ export class CommandCreateDatabase implements yargs.CommandModule {
         switch (database) {
             case "mongo":
                 packageJsonContent.devDependencies["@shelf/jest-mongodb"] = "^1.2.4"
-                packageJsonContent.devDependencies["@types/mongodb"] = "^3.6.12"
-                packageJsonContent.dependencies["mongodb"] = "^3.6.6"
+                packageJsonContent.devDependencies["@types/mongodb"] = "^4.0.7"
+                packageJsonContent.dependencies["mongodb"] = "^4.1.2"
                 break;
             case "mysql":
                 packageJsonContent.dependencies["mysql"] = "^2.18.1"
@@ -106,15 +106,15 @@ export class CommandCreateDatabase implements yargs.CommandModule {
      */
     static async getTemplateToCreateDatabase(base, path, fileContent, database) {
 
-        await CommandUtils.deleteFile(base + "/src/application/server.ts")
+        await CommandUtils.deleteFile(base + "/src/application/index.ts")
         await CommandUtils.createFile(path, fileContent)
 
         const packageJsonContents = await CommandUtils.readFile(base + "/package.json")
 
-        await CommandUtils.createFile(base + "/package.json", CommandCreateDatabase.appendPackageJson(packageJsonContents, database))
-        await CommandUtils.createFile(base + "/src/application/server.ts", CommandCreateDatabase.getTemplateServer(database))
+        await CommandUtils.createFile(base + "/package.json", DatabaseCreateCommand.appendPackageJson(packageJsonContents, database))
+        await CommandUtils.createFile(base + "/src/application/index.ts", DatabaseCreateCommand.getTemplateServer(database))
 
-        await CommandCreateDatabase.executeCommand("npm install", path, base)
+        await DatabaseCreateCommand.executeCommand("npm install", path, base)
 
         console.log(` ${EMOJIS.ROCKET} ${MESSAGES.CONFIG_ENV()}`)
     }

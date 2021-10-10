@@ -6,7 +6,7 @@ import {MESSAGES} from "../utils/messages";
 import {CommandUtils} from "./CommandUtils";
 import {banner, errorMessage} from "../utils/helpers";
 
-export class CommandCreateInterface implements yargs.CommandModule {
+export class InterfaceCreateCommand implements yargs.CommandModule {
     command = "create:interface";
     describe = "Generate a new interface"
 
@@ -32,7 +32,7 @@ export class CommandCreateInterface implements yargs.CommandModule {
         let fileExists: boolean
 
         try {
-            const fileContent = CommandCreateInterface.getTemplateInterface(args.name as any, args.path as any)
+            const fileContent = InterfaceCreateCommand.getTemplateInterface(args.name as any, args.path as any)
             banner()
 
             setTimeout(() => (spinner = ora('Installing...').start()), 1000)
